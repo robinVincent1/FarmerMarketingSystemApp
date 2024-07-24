@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farm Details</title>
+    {% load static %}
+    <style>
+        /* Basic styling for the body */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url('{% static "images/fond.jpeg" %}') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            color: #333; /* Dark color for text for better readability */
+        }
+        
+        /* Styling for the navigation bar */
+        .navbar {
+            background-color: rgba(8, 62, 31, 0.9); /* Dark transparent background for navbar */
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for 3D effect */
+            position: fixed; /* Fixed navbar */
+            width: 100%; /* Full width */
+            top: 0; /* Stick to the top */
+            z-index: 1000; /* Ensure navbar is above other content */
+        }
+        
+        /* Styling for the links in the navbar */
+        .navbar a {
+            display: inline-block; /* Display links inline-block */
+            color: white; /* White text for links */
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+        
+        /* Hover effect for links in the navbar */
+        .navbar a:hover {
+            background-color: rgba(255, 255, 255, 0.1); /* Light transparent background on hover */
+        }
+        
+        /* Clearfix for the navbar */
+        .navbar::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        
+        /* Main container for content */
+        .container {
+            max-width: 800px;
+            margin: 140px auto 20px auto; /* Adjusted margin to create space from top */
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9); /* White background with slight transparency */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow for 3D effect */
+        }
+        
+        /* Styling for the main heading */
+        .main-heading {
+            text-align: center;
+            color: #083e1f; /* Dark green color for heading */
+            margin-bottom: 20px;
+            font-size: 2em; /* Adjust the font size as needed */
+        }
+        
+        /* Styling for subheadings */
+        .subheading {
+            text-align: center;
+            color: #083e1f; /* Dark green color for subheadings */
+            margin-bottom: 20px;
+            font-size: 1.5em; /* Adjust the font size as needed */
+        }
+        
+        /* Styling for labels */
+        label {
+            display: block;
+            margin-top: 10px;
+            color: #666;
+        }
+        
+        /* Styling for select, input, and button elements */
+        select, input, button, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+        /* Additional styling for the button */
+        button {
+            background-color: #083e1f; /* Dark green for the main submit button */
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+        
+        /* Change button background color on hover */
+        button:hover {
+            background-color: #0a4923; /* Slightly lighter green on hover */
+        }
+        
+    </style>
+</head>
+<body>
+
+    <!-- Navigation bar section -->
+    <div class="navbar">
+        <a href="{% url 'home' %}">Home</a>
+        <!-- Links for authenticated farmers -->
+        {% if user.is_authenticated and user.role == 'farmer' %}
+            <a href="{% url 'user_farmer_products' %}">My Farms</a>
+            <a href="{% url 'add_farmer_product' %}">Add a Farm</a>
+        {% endif %}
+        <a href="{% url 'select_product' %}">Order</a>
+        <!-- Links for authenticated funders -->
+        {% if user.is_authenticated and user.role == 'funder' %}
+            <a href="{% url 'financing-offer' %}">Financing Offers</a>
+        {% endif %}
+        <a href="{% url 'financing' %}">Financing</a>
+    </div>
+
+    <!-- Main container for content -->
+    <div class="container">
+        <!-- Title section for farm details -->
+        <div class="main-heading">Farm Details: {{ farm.product_quality }}</div>
+
+        <!-- Form container section to submit a request -->
+        <div class="subheading">Submit a Request</div>
+        <form method="post">
+            {% csrf_token %}
+            <!-- Render the form fields -->
+            {{ form.as_p }}
+            <!-- Submit button for submitting the request -->
+            <button type="submit">Submit Request</button>
+        </form>
+    </div>
+
+</body>
+</html>

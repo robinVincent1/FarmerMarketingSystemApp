@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Product</title>
+    {% load static %}
+    <style>
+        /* Basic styling for the body */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url('{% static "images/fond.jpeg" %}') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        
+        /* Styling for the navigation bar */
+        .navbar {
+            background-color: rgba(8, 62, 31, 0.9);
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        /* Styling for the links in the navbar */
+        .navbar a {
+            display: inline-block;
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+        
+        /* Hover effect for links in the navbar */
+        .navbar a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Clearfix for the navbar */
+        .navbar::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        
+        /* Main container for content */
+        .container {
+            max-width: 600px;
+            margin: 140px auto 20px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #083e1f;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 10px;
+            color: #555;
+        }
+
+        input, select, textarea, button {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #083e1f;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0a4923;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation bar with links to various pages -->
+    <div class="navbar">
+        <a href="{% url 'home' %}">Home</a>
+        {% if user.is_authenticated and user.role == 'farmer' %}
+            <a href="{% url 'user_farmer_products' %}">My Farms</a>
+            <a href="{% url 'add_farmer_product' %}">Add a Farm</a>
+        {% endif %}
+        <a href="{% url 'select_product' %}">Order</a>
+        {% if user.is_authenticated and user.role == 'funder' %}
+            <a href="{% url 'financing-offer' %}">Financing Offers</a>
+        {% endif %}
+        <a href="{% url 'financing' %}">Financing</a>
+    </div>
+
+    <!-- Container for the product edit form -->
+    <div class="container">
+        <h1>Edit Product</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+
+</body>
+</html>

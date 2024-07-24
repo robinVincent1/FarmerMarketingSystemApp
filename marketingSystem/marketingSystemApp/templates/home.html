@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    {% load static %}
+    <style>
+        /* Basic styling for the body */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url('{% static "images/fond.jpeg" %}') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            color: #333; /* Dark color for text for better readability */
+        }
+        
+        /* Styling for the navigation bar */
+        .navbar {
+            background-color: rgba(8, 62, 31, 0.9); /* Dark transparent background for navbar */
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for 3D effect */
+            position: fixed; /* Fixed navbar */
+            width: 100%; /* Full width */
+            top: 0; /* Stick to the top */
+            z-index: 1000; /* Ensure navbar is above other content */
+        }
+        
+        /* Styling for the links in the navbar */
+        .navbar a {
+            float: left;
+            display: block;
+            color: white; /* White text for links */
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+        
+        /* Hover effect for links in the navbar */
+        .navbar a:hover {
+            background-color: rgba(255, 255, 255, 0.1); /* Light transparent background on hover */
+        }
+        
+        /* Clearfix for the navbar */
+        .navbar::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        
+        /* Container for charts */
+        .chart-container {
+            width: 90%; /* Width set to 90% for better use of space */
+            margin: 80px auto 20px auto; /* Center the container with space from the top */
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9); /* White background with slight transparency for the chart container */
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for card effect */
+        }
+        
+        /* Centering the chart content */
+        .chart {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        /* Styling for analysis text boxes */
+        .analysis {
+            padding: 10px;
+            background: rgba(232, 245, 233, 0.9); /* Light green background with slight transparency for analysis boxes */
+            border-left: 5px solid #4CAF50; /* Green border on the left */
+            margin-bottom: 20px;
+        }
+        
+        /* Styling for subheadings inside chart container */
+        .chart-container h2 {
+            color: #333;
+            text-align: center;
+            font-size: 1.75em;
+            margin-top: 0; /* Remove default margin from h2 */
+        }
+        
+        /* Styling for the login/logout button */
+        .navbar .auth-button {
+            float: right;
+            background-color: rgba(8, 62, 31, 0.9); /* Green for login/logout button */
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            cursor: pointer;
+        }
+
+        .navbar .auth-button:hover {
+            background-color: rgba(255, 255, 255, 0.1); /* Slightly darker green on hover */
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation bar section -->
+    <div class="navbar">
+        <a href="{% url 'home' %}">Home</a>
+        {% if user.is_authenticated and user.role == 'farmer' %}
+            <a href="{% url 'user_farmer_products' %}">My Farms</a>
+            <a href="{% url 'add_farmer_product' %}">Add a Farm</a>
+        {% endif %}
+        <a href="{% url 'select_product' %}">Order</a>
+        {% if user.is_authenticated and user.role == 'funder' %}
+            <a href="{% url 'financing-offer' %}">Financing Offers</a>
+        {% endif %}
+        <a href="{% url 'financing' %}">Financing</a>
+        {% if user.is_authenticated %}
+            <a class="auth-button" href="{% url 'signin' %}">Logout</a>
+        {% else %}
+            <a class="auth-button" href="{% url 'signin' %}">Login</a>
+        {% endif %}
+    </div>
+
+    <!-- Chart container for product sales by date -->
+    <div class="chart-container">
+        <h2>Product Sales by Date</h2>
+        <div class="chart">
+            <!-- Displaying the sales per date graph -->
+            <img src="data:image/png;base64,{{ sales_per_date_graph }}" alt="Sales per Date Graph">
+        </div>
+        <div class="analysis">
+            <!-- Analysis text explaining the sales per date graph -->
+            <p>This graph shows the sales volume of different products by date. It helps identify trends and patterns in product demand over time, enabling better inventory management and marketing strategies.</p>
+        </div>
+    </div>
+
+    <!-- Chart container for product sales by month -->
+    <div class="chart-container">
+        <h2>Product Sales by Month</h2>
+        <div class="chart">
+            <!-- Displaying the sales per month graph -->
+            <img src="data:image/png;base64,{{ sales_per_month_graph }}" alt="Sales per Month Graph">
+        </div>
+        <div class="analysis">
+            <!-- Analysis text explaining the sales per month graph -->
+            <p>This graph shows the sales volume of different products by month. It helps identify seasonal trends in product demand. For instance, if a product consistently sells more in certain months, you can plan your production and marketing strategies accordingly.</p>
+        </div>
+    </div>
+
+    <!-- Chart container for quantity of products sold by month -->
+    <div class="chart-container">
+        <h2>Quantity of Products Sold by Month</h2>
+        <div class="chart">
+            <!-- Displaying the quantity sold per month graph -->
+            <img src="data:image/png;base64,{{ quantity_per_month_graph }}" alt="Quantity Sold per Month Graph">
+        </div>
+        <div class="analysis">
+            <!-- Analysis text explaining the quantity sold per month graph -->
+            <p>This bar chart displays the quantity of products sold each month. It helps understand which products are more popular during certain times of the year, allowing farmers to adjust their production based on demand.</p>
+        </div>
+    </div>
+
+    <!-- Chart container for revenue by month -->
+    <div class="chart-container">
+        <h2>Revenue by Month</h2>
+        <div class="chart">
+            <!-- Displaying the revenue per month graph -->
+            <img src="data:image/png;base64,{{ revenue_per_month_graph }}" alt="Revenue per Month Graph">
+        </div>
+        <div class="analysis">
+            <!-- Analysis text explaining the revenue per month graph -->
+            <p>This graph shows the total revenue generated each month. It helps identify the months with the highest sales, allowing you to plan your resources and marketing strategies better.</p>
+        </div>
+    </div>
+</body>
+</html>

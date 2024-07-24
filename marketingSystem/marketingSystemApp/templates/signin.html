@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    {% load static %}
+    <style>
+        /* Basic styling for the body to center the form */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url('{% static "images/fond.jpeg" %}') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 10px; /* Add padding to prevent the form from touching the window edges */
+        }
+        /* Styling for the form */
+        form {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 100%; /* Use 100% of the available width */
+            max-width: 350px; /* Maximum width of 350px */
+        }
+        /* Styling for the header */
+        h2 {
+            text-align: center;
+            color: #333;
+            font-size: 1.5rem; /* Adjustable font size */
+            margin-bottom: 20px;
+        }
+        /* Basic styling for paragraphs */
+        p {
+            margin: 10px 0;
+        }
+        /* Styling for labels */
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+        /* Styling for inputs and button */
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        /* Additional styling for the button */
+        button {
+            background-color: #083e1f; /* Dark green */
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+        /* Change button background color on hover */
+        button:hover {
+            background-color: #0a4923; /* Slightly lighter green on hover */
+        }
+        /* Styling for the signup button */
+        .signup-button {
+            display: block;
+            text-align: center;
+            background-color: #3b5998; /* Blue for the signup button */
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        .signup-button:hover {
+            background-color: #2d4373; /* Darker blue on hover */
+        }
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 400px) {
+            form {
+                padding: 10px;
+            }
+            h2 {
+                font-size: 1.25rem; /* Reduce font size for small screens */
+            }
+            input, button {
+                padding: 8px; /* Reduce padding for form elements */
+            }
+        }
+    </style>
+</head>
+<body>
+    <form method="post">
+        <h2>Login</h2>
+        {% csrf_token %}
+        <!-- Render each field individually without displaying errors -->
+        <p>{{ form.username.label_tag }} {{ form.username }}</p>
+        <p>{{ form.password.label_tag }} {{ form.password }}</p>
+        <button type="submit">Login</button>
+        <!-- Add a signup button that redirects to the signup page -->
+        <a href="{% url 'signup' %}" class="signup-button">Signup</a>
+    </form>
+</body>
+</html>

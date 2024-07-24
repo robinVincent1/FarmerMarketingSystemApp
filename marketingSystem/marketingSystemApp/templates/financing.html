@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of Financing Offers</title>
+    {% load static %}
+    <style>
+        /* Basic styling for the body */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url('{% static "images/fond.jpeg" %}') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            color: #333; /* Dark color for text for better readability */
+        }
+        
+        /* Styling for the navigation bar */
+        .navbar {
+            background-color: rgba(8, 62, 31, 0.9); /* Dark transparent background for navbar */
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for 3D effect */
+            position: fixed; /* Fixed navbar */
+            width: 100%; /* Full width */
+            top: 0; /* Stick to the top */
+            z-index: 1000; /* Ensure navbar is above other content */
+        }
+        /* Styling for the links in the navbar */
+        .navbar a {
+            display: inline-block; /* Display links inline-block */
+            color: white; /* White text for links */
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+        /* Hover effect for links in the navbar */
+        .navbar a:hover {
+            background-color: rgba(255, 255, 255, 0.1); /* Light transparent background on hover */
+        }
+        /* Clearfix for the navbar */
+        .navbar::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        /* Main container for content */
+        .container {
+            max-width: 800px;
+            margin: 140px auto 20px auto; /* Adjusted margin to create space from top */
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9); /* White background with slight transparency */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow for 3D effect */
+        }
+        /* Styling for main headers */
+        h1, h2 {
+            text-align: center;
+            color: #083e1f; /* Dark green color */
+            margin-bottom: 20px;
+        }
+        /* Styling for lists */
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px auto;
+        }
+        /* Styling for list items */
+        li {
+            background-color: rgba(255, 255, 255, 0.9); /* White background with slight transparency */
+            margin-top: 10px;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for 3D effect */
+        }
+        /* Styling for detail boxes */
+        .detail-box {
+            flex: 1 1 45%; /* Flexbox properties for responsive design */
+            margin-bottom: 10px;
+        }
+        /* Styling for forms */
+        form {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for 3D effect */
+        }
+        /* Styling for labels */
+        label {
+            display: block;
+            margin-top: 10px;
+            color: #666; /* Gray color for labels */
+        }
+        /* Styling for inputs and buttons */
+        input, button, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        /* Additional styling for buttons */
+        button {
+            background-color: #083e1f; /* Dark green color for buttons */
+            color: white; /* White text for buttons */
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+        }
+        /* Change button background color on hover */
+        button:hover {
+            background-color: #0a4923; /* Slightly lighter green on hover */
+        }
+        /* Styling for messages */
+        .messages {
+            width: 80%;
+            margin: 10px auto;
+            padding: 10px;
+            background-color: #f8d7da; /* Light red background for messages */
+            color: #721c24; /* Dark red color for text */
+            border: 1px solid #f5c6cb; /* Darker red border */
+            border-radius: 5px;
+        }
+        /* Styling for offer details */
+        .offer-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        /* Styling for offer text */
+        .offer-text {
+            flex-grow: 1;
+            text-align: left; /* Align text to the left for better readability */
+        }
+        /* Styling for action buttons */
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px; /* Adjust gap between buttons */
+        }
+        /* Styling for buttons with icon */
+        .button-icon {
+            background: #4CAF50; /* Green for accept button */
+            color: white;
+            border-radius: 5px;
+            padding: 5px 15px;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+        }
+        /* Change button icon background color on hover */
+        .button-icon:hover {
+            background-color: #45a049; /* Slightly darker green on hover */
+        }
+        /* Styling for reject buttons */
+        .button-reject {
+            background: #7d431f; /* Red for reject button */
+            color: white;
+            border-radius: 5px;
+            padding: 5px 15px;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+        }
+        /* Change button reject background color on hover */
+        .button-reject:hover {
+            background-color: #e53935; /* Slightly darker red on hover */
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation bar section -->
+    <div class="navbar">
+        <a href="{% url 'home' %}">Home</a>
+        <!-- Links for authenticated farmers -->
+        {% if user.is_authenticated and user.role == 'farmer' %}
+            <a href="{% url 'user_farmer_products' %}">My Farms</a>
+            <a href="{% url 'add_farmer_product' %}">Add a Farm</a>
+        {% endif %}
+        <a href="{% url 'select_product' %}">Order</a>
+        <!-- Links for authenticated funders -->
+        {% if user.is_authenticated and user.role == 'funder' %}
+            <a href="{% url 'financing-offer' %}">Financing Offers</a>
+        {% endif %}
+        <a href="{% url 'financing' %}">Financing</a>
+    </div>
+    
+    <!-- Main container for content -->
+    <div class="container">
+        <!-- Form section for filtering financing offers -->
+        <h1>Filter Financing Offers</h1>
+        <form method="get" action="{% url 'financing' %}">
+            <label for="date">Date (yyyy-mm-dd):</label>
+            <input type="date" id="date" name="date">
+            
+            <label for="price">Price (€):</label>
+            <input type="number" id="price" name="price" step="0.01">
+    
+            <button type="submit">Filter</button>
+        </form>
+        
+        <!-- Section displaying user's financing requests -->
+        <h1>Your Financing Requests</h1>
+        <ul>
+            <!-- Loop through user's financing requests -->
+            {% for request in user_requests %}
+                <li>
+                    <div class="request-details">
+                        <div class="detail-box"><strong>Offer:</strong> {{ request.offer.content }}</div>
+                        <div class="detail-box"><strong>Date:</strong> {{ request.date_request }}</div>
+                        <div class="detail-box"><strong>Status:</strong> waiting </div>
+                        <div class="detail-box"><strong>Offer Date:</strong> {{ request.offer.offer_date }}</div>
+                        <div class="detail-box"><strong>Offer Price:</strong> €{{ request.offer.price }}</div>
+                        <div class="detail-box"><strong>Offer by:</strong> {{ request.offer.user.username }}</div>
+                        <div class="detail-box"><strong>Email:</strong> {{ request.offer.user.email }}</div>
+                        <div class="detail-box"><strong>Phone:</strong> {{ request.offer.user.phone_number }}</div>
+                    </div>
+                </li>
+            {% empty %}
+                <li>You have not made any financing requests yet.</li>
+            {% endfor %}
+        </ul>
+        
+        <!-- Section displaying list of financing offers -->
+        <h1>List of Financing Offers</h1>
+        <ul>
+            <!-- Loop through financing offers -->
+            {% for offer in offers %}
+                <li>
+                    <div class="offer-details">
+                        <div class="detail-box"><strong>Date:</strong> {{ offer.offer_date }}</div>
+                        <div class="detail-box"><strong>Offer by:</strong> {{ offer.user.username }}</div>
+                        <div class="detail-box"><strong>Content:</strong> {{ offer.content }}</div>
+                        <div class="detail-box"><strong>Price:</strong> €{{ offer.price }}</div>
+                    </div>
+                    <!-- Form to submit a financing request -->
+                    {% if user.is_authenticated %}
+                        <form method="post" action="{% url 'create_financing_request' offer.id %}">
+                            {% csrf_token %}
+                            <input type="text" name="content" placeholder="Your proposal here..." required>
+                            <button type="submit">Submit Request</button>
+                        </form>
+                    {% else %}
+                        <p>Log in to make a request.</p>
+                    {% endif %}
+                </li>
+            {% empty %}
+                <li>No financing offers available at the moment.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

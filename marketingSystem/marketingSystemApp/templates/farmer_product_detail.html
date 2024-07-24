@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farm Details</title>
+    {% load static %}
+    <style>
+        /* Basic styling for the body */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url('{% static "images/fond.jpeg" %}') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            color: #333; /* Dark color for text for better readability */
+        }
+        
+        /* Styling for the navigation bar */
+        .navbar {
+            background-color: rgba(8, 62, 31, 0.9); /* Dark transparent background for navbar */
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for 3D effect */
+            position: fixed; /* Fixed navbar */
+            width: 100%; /* Full width */
+            top: 0; /* Stick to the top */
+            z-index: 1000; /* Ensure navbar is above other content */
+        }
+        
+        /* Styling for the links in the navbar */
+        .navbar a {
+            display: inline-block; /* Display links inline-block */
+            color: white; /* White text for links */
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+        
+        /* Hover effect for links in the navbar */
+        .navbar a:hover {
+            background-color: rgba(255, 255, 255, 0.1); /* Light transparent background on hover */
+        }
+        
+        /* Clearfix for the navbar */
+        .navbar::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        
+        /* Main container for content */
+        .container {
+            max-width: 900px;
+            margin: 140px auto 20px auto; /* Adjusted margin to create space from top */
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9); /* White background with slight transparency */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow for 3D effect */
+        }
+
+        /* Styling for the main heading */
+        .main-heading {
+            text-align: center;
+            color: #083e1f; /* Dark green color for heading */
+            margin-bottom: 20px;
+            font-size: 2em; /* Adjust the font size as needed */
+        }
+
+        /* Styling for subheadings */
+        .subheading {
+            text-align: center;
+            color: #083e1f; /* Dark green color for subheadings */
+            margin-bottom: 20px;
+            font-size: 1.5em; /* Adjust the font size as needed */
+        }
+        
+        /* Styling for lists */
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+        
+        /* Styling for list items */
+        li {
+            background-color: #e4e4e4;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        /* Styling for links inside list items */
+        li a {
+            text-decoration: none;
+            color: #333;
+            display: block;
+        }
+        
+        /* Change link color on hover */
+        li a:hover {
+            color: #3e8e41;
+        }
+        
+        /* Styling for buttons */
+        .button {
+            background-color: #083e1f; /* Dark green */
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        
+        /* Change button background color on hover */
+        .button:hover {
+            background-color: #0a4923; /* Slightly lighter green on hover */
+        }
+        
+        /* Styling for messages */
+        .messages {
+            width: 80%;
+            margin: 10px auto;
+            padding: 10px;
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+        }
+        
+        /* Styling for transaction details */
+        .transaction-details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .transaction-details div {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation bar section -->
+    <div class="navbar">
+        <a href="{% url 'home' %}">Home</a>
+        <!-- Links for authenticated farmers -->
+        {% if user.is_authenticated and user.role == 'farmer' %}
+            <a href="{% url 'user_farmer_products' %}">My Farms</a>
+            <a href="{% url 'add_farmer_product' %}">Add a Farm</a>
+        {% endif %}
+        <a href="{% url 'select_product' %}">Order</a>
+        <!-- Links for authenticated funders -->
+        {% if user.is_authenticated and user.role == 'funder' %}
+            <a href="{% url 'financing-offer' %}">Financing Offers</a>
+        {% endif %}
+        <a href="{% url 'financing' %}">Financing</a>
+    </div>
+
+    <!-- Main container for content -->
+    <div class="container">
+        <!-- Title section for farm details -->
+        <div class="main-heading">Farm Details: {{ farmer_product.product_quality }}</div>
+
+        <!-- Display messages if any -->
+        {% if messages %}
+            <ul class="messages">
+                <!-- Loop through each message -->
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <!-- Form section to add a product to the farm -->
+        <div class="subheading">Add a Product to this Farm</div>
+        <form method="post">
+            {% csrf_token %}
+            <!-- Render the form fields with the correct prefix -->
+            {{ product_form.as_p }}
+            <!-- Submit button for adding product -->
+            <button type="submit" name="product_submit">Add Product</button>
+        </form>
+    </div>
+
+    <!-- Section listing products of the farm -->
+    <div class="container">
+        <div class="subheading">List of Products in this Farm</div>
+        <ul>
+            <!-- Loop through each product -->
+            {% for product in products %}
+                <li>
+                    <div>
+                        <strong>{{ product.product_name }}</strong><br>
+                        Measurement: {{ product.measurement }}<br>
+                        Quality: {{ product.product_quality }}<br>
+                        Production Method: {{ product.production_method }}<br>
+                        Certifications: {{ product.certifications }}<br>
+                        Season Start: {{ product.season_start }}<br>
+                        Season End: {{ product.season_end }}<br>
+                        Minimum Order Quantity: {{ product.minimum_order_quantity }}<br>
+                        Price: {{ product.price }}<br>
+                    </div>
+                    <div>
+                        <!-- Edit button -->
+                        {% if not product.has_requests %}
+                            <a href="{% url 'edit_product' product.id %}" class="button">Edit</a>
+                        {% endif %}
+                        <!-- Delete button -->
+                        <form method="post" action="{% url 'delete_product' product.id %}" class="inline-form">
+                            {% csrf_token %}
+                            <button type="submit" class="button">Delete</button>
+                        </form>
+                    </div>
+                </li>
+            {% empty %}
+                <li>No associated products found.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Section listing requests associated with the farm -->
+    <div class="container">
+        <div class="subheading">Requests Associated with this Farm</div>
+        <ul>
+            <!-- Loop through each request -->
+            {% for request in requests %}
+                <li>
+                    Request for {{ request.id_product.product_name }}<br>
+                    Content: {{ request.content}}<br>
+                    Volume: {{ request.product_volume }}<br>
+                    Quality: {{ request.product_quality }}<br>
+                    Status: {{ request.request_status }}<br>
+                    Need Date: {{ request.need_date }}<br>
+                    Total Price: {{ request.total_price }}<br>
+                    Requested by: {{ request.user.username }}<br>
+                    Email: {{ request.user.email }} <br>
+                    Phone: {{ request.user.phone_number }}<br>
+                    <!-- Form to accept the request -->
+                    <form method="post" action="{% url 'accept_request' request.id %}" class="inline-form">
+                        {% csrf_token %}
+                        <button type="submit" class="button">Accept</button>
+                    </form>
+                    <!-- Form to reject the request -->
+                    <form method="post" action="{% url 'reject_request' request.id %}" class="inline-form">
+                        {% csrf_token %}
+                        <button type="submit" class="button">Reject</button>
+                    </form>
+                </li>
+            {% empty %}
+                <li>No requests found.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Section listing transactions for accepted requests -->
+    <div class="container">
+        <div class="subheading">Transactions for Accepted Requests</div>
+        <ul>
+            <!-- Loop through each transaction -->
+            {% for transaction in transactions %}
+                <li>
+                    <div class="transaction-details">
+                        <div><strong>Product:</strong> {{ transaction.id_request.id_product.product_name }}</div>
+                        <div><strong>Volume:</strong> {{ transaction.volume }}</div>
+                        <div><strong>Total Price:</strong> {{ transaction.total_price }}</div>
+                        <div><strong>Date:</strong> {{ transaction.transaction_date }}</div>
+                        <div><strong>Requested by:</strong> {{ transaction.id_request.user.username }}</div>
+                        <div><strong>Email:</strong> {{ transaction.id_request.user.email }}</div>
+                        <div><strong>Phone:</strong> {{ transaction.id_request.user.phone_number }}</div>
+                    </div>
+                </li>
+            {% empty %}
+                <li>No transactions found.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Farm Product</title>
+    {% load static %}
+    <style>
+        /* Basic styling for the body */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url('{% static "images/fond.jpeg" %}') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            color: #333; /* Dark color for text for better readability */
+        }
+
+        /* Styling for the navigation bar */
+        .navbar {
+            background-color: rgba(8, 62, 31, 0.9); /* Dark transparent background for navbar */
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for 3D effect */
+            position: fixed; /* Fixed navbar */
+            width: 100%; /* Full width */
+            top: 0; /* Stick to the top */
+            z-index: 1000; /* Ensure navbar is above other content */
+        }
+
+        /* Styling for the links in the navbar */
+        .navbar a {
+            display: inline-block; /* Display links inline-block */
+            color: white; /* White text for links */
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+
+        /* Hover effect for links in the navbar */
+        .navbar a:hover {
+            background-color: rgba(255, 255, 255, 0.1); /* Light transparent background on hover */
+        }
+
+        /* Clearfix for the navbar */
+        .navbar::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        /* Main container for content */
+        .container {
+            max-width: 800px;
+            margin: 140px auto 20px auto; /* Adjusted margin to create space from top */
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9); /* White background with slight transparency */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow for 3D effect */
+        }
+
+        /* Styling for the main heading */
+        .main-heading {
+            text-align: center;
+            color: #083e1f; /* Dark green color for heading */
+            margin-bottom: 20px;
+            font-size: 2em; /* Adjust the font size as needed */
+        }
+
+        /* Styling for labels */
+        label {
+            display: block;
+            margin-top: 10px;
+            color: #666;
+        }
+
+        /* Styling for select, input, and button elements */
+        select, input, button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* Additional styling for the button */
+        button {
+            background-color: #083e1f; /* Dark green for the main submit button */
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Change button background color on hover */
+        button:hover {
+            background-color: #0a4923; /* Slightly lighter green on hover */
+        }
+
+        /* Styling for lists and list items */
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px auto;
+            max-width: 800px; /* Adjusted to match container width */
+        }
+
+        li {
+            background: rgba(255, 255, 255, 0.9); /* White background with slight transparency */
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Flex container for farm details */
+        .farm-details {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        /* Styling for each detail box */
+        .detail-box {
+            flex: 0 0 48%;
+            margin-bottom: 10px;
+        }
+
+        /* Clearfix for floats */
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation bar section -->
+    <div class="navbar">
+        <a href="{% url 'home' %}">Home</a>
+        {% if user.is_authenticated and user.role == 'farmer' %}
+            <a href="{% url 'user_farmer_products' %}">My Farms</a>
+            <a href="{% url 'add_farmer_product' %}">Add a Farm</a>
+        {% endif %}
+        <a href="{% url 'select_product' %}">Order</a>
+        {% if user.is_authenticated and user.role == 'funder' %}
+            <a href="{% url 'financing-offer' %}">Financing Offers</a>
+        {% endif %}
+        <a href="{% url 'financing' %}">Financing</a>
+    </div>
+
+    <!-- Main container for content -->
+    <div class="container">
+        <!-- Title section -->
+        <div class="main-heading">Add a New Farm</div>
+
+        <!-- Form to add a new farm product -->
+        <form method="post">
+            {% csrf_token %}
+            <!-- Field for production date and quality -->
+            <div class="clearfix">
+                <div class="detail-box">
+                    <label for="id_product_date">Production Date</label>
+                    {{ form.product_date }}
+                </div>
+                <div class="detail-box">
+                    <label for="id_product_quality">Production Quality:</label>
+                    {{ form.product_quality }}
+                </div>
+            </div>
+            <!-- Field for price and production volume -->
+            <div class="clearfix">
+                <div class="detail-box">
+                    <label for="id_price">Price:</label>
+                    {{ form.price }}
+                </div>
+                <div class="detail-box">
+                    <label for="id_product_volume">Production Volume:</label>
+                    {{ form.product_volume }}
+                </div>
+            </div>
+            <!-- Field for remaining volume and availability date -->
+            <div class="clearfix">
+                <div class="detail-box">
+                    <label for="id_remaining_volume">Remaining Volume:</label>
+                    {{ form.remaining_volume }}
+                </div>
+                <div class="detail-box">
+                    <label for="id_date_available">Availability Date:</label>
+                    {{ form.date_available }}
+                </div>
+            </div>
+            <!-- Field for latitude and longitude -->
+            <div class="clearfix">
+                <div class="detail-box">
+                    <label for="id_latitude">Latitude:</label>
+                    {{ form.latitude }}
+                </div>
+                <div class="detail-box">
+                    <label for="id_longitude">Longitude:</label>
+                    {{ form.longitude }}
+                </div>
+            </div>
+            <!-- Field for quality and production method -->
+            <div class="clearfix">
+                <div class="detail-box">
+                    <label for="id_quality">Quality:</label>
+                    {{ form.quality }}
+                </div>
+                <div class="detail-box">
+                    <label for="id_production_method">Production Method:</label>
+                    {{ form.production_method }}
+                </div>
+            </div>
+            <!-- Field for season start and end -->
+            <div class="clearfix">
+                <div class="detail-box">
+                    <label for="id_season_start">Season Start:</label>
+                    {{ form.season_start }}
+                </div>
+                <div class="detail-box">
+                    <label for="id_season_end">Season End:</label>
+                    {{ form.season_end }}
+                </div>
+            </div>
+            <!-- Field for certifications and minimum order quantity -->
+            <div class="clearfix">
+                <div class="detail-box">
+                    <label for="id_certifications">Certifications:</label>
+                    {{ form.certifications }}
+                </div>
+                <div class="detail-box">
+                    <label for="id_minimum_order_quantity">Minimum Order Quantity:</label>
+                    {{ form.minimum_order_quantity }}
+                </div>
+            </div>
+            <!-- Submit button for adding the farm -->
+            <button type="submit">Add Farm</button>
+        </form>
+    </div>
+
+    <!-- Main container for content -->
+    <div class="container">
+        <!-- Title section for existing farms -->
+        <div class="main-heading">List of Existing Farms</div>
+        <ul>
+            <!-- Loop through each farm product -->
+            {% for product in farmer_products %}
+                <li>
+                    <div class="farm-details">
+                        <div class="detail-box"><strong>Date:</strong> {{ product.product_date }}</div>
+                        <div class="detail-box"><strong>Quality:</strong> {{ product.product_quality }}</div>
+                        <div class="detail-box"><strong>Price:</strong> {{ product.price }}</div>
+                        <div class="detail-box"><strong>Volume:</strong> {{ product.product_volume }}</div>
+                        <div class="detail-box"><strong>Remaining Volume:</strong> {{ product.remaining_volume }}</div>
+                        <div class="detail-box"><strong>Available:</strong> {{ product.date_available }}</div>
+                        <div class="detail-box"><strong>Latitude:</strong> {{ product.latitude }}</div>
+                        <div class="detail-box"><strong>Longitude:</strong> {{ product.longitude }}</div>
+                        <div class="detail-box"><strong>Quality:</strong> {{ product.quality }}</div>
+                        <div class="detail-box"><strong>Production Method:</strong> {{ product.production_method }}</div>
+                        <div class="detail-box"><strong>Season Start:</strong> {{ product.season_start }}</div>
+                        <div class="detail-box"><strong>Season End:</strong> {{ product.season_end }}</div>
+                        <div class="detail-box"><strong>Certifications:</strong> {{ product.certifications }}</div>
+                        <div class="detail-box"><strong>Minimum Order Quantity:</strong> {{ product.minimum_order_quantity }}</div>
+                        <div class="detail-box"><strong>Rating:</strong> {{ product.rating }}</div>
+                    </div>
+                </li>
+            {% empty %}
+                <li>No farms were found.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</body>
+</html>
